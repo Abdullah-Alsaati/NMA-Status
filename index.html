@@ -13,75 +13,109 @@
             background: linear-gradient(135deg, #e3f2fd 0%, #e8eaf6 100%);
             min-height: 100vh;
             color: #1a202c;
+            padding-bottom: 2rem;
         }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
         
         /* Header */
-        .header { background: white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-bottom: 1px solid #e2e8f0; padding: 1.5rem 0; }
+        .header { background: white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-bottom: 1px solid #e2e8f0; padding: 1.5rem 0; margin-bottom: 2rem; }
         .header-content { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
         .header h1 { font-size: 1.875rem; font-weight: bold; color: #1a202c; }
         .subtitle { color: #718096; margin-top: 0.25rem; }
 
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; text-align: center; }
+            .header h1 { font-size: 1.5rem; }
+            .card { padding: 1.25rem !important; }
+            .update-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .comment-form-row { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; display: flex; }
+            .header-actions { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; }
+        }
+
         /* Buttons */
-        .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; transition: all 0.2s; text-decoration: none; display: inline-block; }
+        .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; }
         .btn-primary { background: #3b82f6; color: white; }
         .btn-primary:hover { background: #2563eb; }
         .btn-secondary { background: #e5e7eb; color: #374151; }
         .btn-secondary:hover { background: #d1d5db; }
         .btn-danger { background: #fee2e2; color: #991b1b; }
         .btn-danger:hover { background: #fecaca; }
-
+        .btn-text { background: none; color: #6b7280; padding: 0; text-decoration: underline; font-size: 0.8rem; }
+        .btn-ghost { background: transparent; color: #4b5563; border: 1px solid #d1d5db; }
+        
         /* Layout & Cards */
-        .main-content { padding: 2rem 0; }
-        .card { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 2rem; margin-bottom: 2rem; }
+        .main-content { padding: 0; }
+        .card { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 2rem; margin-bottom: 1.5rem; }
         .hidden { display: none !important; }
         
         /* Progress Bar */
         .progress-wrapper { margin-top: 1rem; }
-        .progress-bar { width: 100%; height: 2rem; background: #e5e7eb; border-radius: 9999px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(to right, #3b82f6, #6366f1); transition: width 0.5s ease; width: 0%; }
-        .progress-text { text-align: center; margin-top: 0.5rem; font-size: 1.5rem; font-weight: bold; }
+        .progress-bar { width: 100%; height: 2rem; background: #f3f4f6; border-radius: 9999px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+        .progress-fill { height: 100%; background: linear-gradient(to left, #3b82f6, #6366f1); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+        .progress-text { text-align: center; margin-top: 0.5rem; font-size: 1.5rem; font-weight: bold; color: #1f2937; }
 
         /* Updates Styling */
         .updates-container { display: flex; flex-direction: column; gap: 1.5rem; }
-        .update-card { border: 1px solid; border-radius: 0.5rem; padding: 1.25rem; background: white; }
-        .update-info { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
-        .update-success { background: #dcfce7; border-color: #86efac; color: #15803d; }
-        .update-warning { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
-        .update-error { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
-        .update-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .update-time { font-size: 0.75rem; opacity: 0.75; }
+        .update-card { border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.5rem; background: white; transition: transform 0.2s; }
+        .update-card:hover { border-color: #cbd5e1; }
+        
+        .update-info { border-right: 4px solid #3b82f6; }
+        .update-success { border-right: 4px solid #22c55e; }
+        .update-warning { border-right: 4px solid #eab308; }
+        .update-error { border-right: 4px solid #ef4444; }
+        
+        .update-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+        .update-time { font-size: 0.75rem; color: #9ca3af; white-space: nowrap; }
+        .update-body { color: #374151; line-height: 1.6; font-size: 0.95rem; }
 
+        /* Comments Section */
+        .comments-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #f1f5f9; }
+        .comment-thread { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+        .comment-bubble { background: #f8fafc; padding: 0.75rem 1rem; border-radius: 0.75rem; border-top-right-radius: 0; font-size: 0.9rem; border: 1px solid #f1f5f9; }
+        .comment-meta { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.25rem; color: #64748b; }
+        .comment-author { font-weight: bold; color: #334155; }
+        
+        .comment-form { background: #f8fafc; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; }
+        .comment-form-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        
         /* Dashboard Specifics */
-        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-        .login-card { background: white; border-radius: 0.75rem; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .input, .select, .textarea { width: 100%; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; margin-bottom: 1rem; }
+        .login-screen { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .login-card { background: white; border-radius: 1rem; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .input, .select, .textarea { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; margin-bottom: 1rem; font-size: 0.95rem; transition: border-color 0.2s; }
+        .input:focus { outline: none; border-color: #3b82f6; ring: 2px solid rgba(59, 130, 246, 0.1); }
         
         /* Rich Text Editor */
-        .editor { width: 100%; min-height: 120px; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; margin-bottom: 1rem; background: white; overflow-y: auto; }
-        .editor:focus { outline: 2px solid #3b82f6; }
-        .formatting-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
-        .format-btn { padding: 0.25rem 0.5rem; background: white; border: 1px solid #d1d5db; border-radius: 0.25rem; cursor: pointer; }
+        .editor { width: 100%; min-height: 120px; padding: 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; margin-bottom: 1rem; background: white; overflow-y: auto; }
+        .editor:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+        .formatting-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; flex-wrap: wrap; }
+        .format-btn { padding: 0.35rem 0.75rem; background: white; border: 1px solid #d1d5db; border-radius: 0.25rem; cursor: pointer; min-width: 32px; }
 
         /* Categories */
-        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-        .category-card { background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-        .category-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
-        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .category-card { background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9; }
+        .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .status-badge { padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
         .status-not-started { background: #f3f4f6; color: #6b7280; }
-        .status-in-progress { background: #dbeafe; color: #2563eb; }
-        .status-complete { background: #dcfce7; color: #16a34a; }
+        .status-in-progress { background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
+        .status-complete { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
         
-        .category-control { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #eee; }
+        .category-control { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #eee; }
         
         /* Loading Overlay */
-        #loadingOverlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 50; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: #3b82f6; }
+        #loadingOverlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 50; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #3b82f6; gap: 1rem; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #e2e8f0; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <!-- Loading State -->
-    <div id="loadingOverlay">جاري الاتصال بقاعدة البيانات...</div>
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <div id="loadingText">جاري الاتصال...</div>
+    </div>
 
     <!-- MAIN VIEW (Public) -->
     <div id="publicView">
@@ -92,8 +126,10 @@
                         <h1>انتقال NMA من زد إلى شوبيفاي</h1>
                         <p class="subtitle">تابع تقدم عملية الانتقال بشكل مباشر</p>
                     </div>
-                    <button id="adminBtn" class="btn btn-secondary">لوحة التحكم ←</button>
-                    <button id="logoutBtn" class="btn btn-danger hidden">تسجيل خروج</button>
+                    <div class="header-actions">
+                        <button id="adminBtn" class="btn btn-secondary">لوحة التحكم ←</button>
+                        <button id="logoutBtn" class="btn btn-danger hidden">تسجيل خروج</button>
+                    </div>
                 </div>
             </div>
         </header>
@@ -101,8 +137,8 @@
         <main class="container main-content">
             <!-- Overall Progress -->
             <div class="card progress-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
-                    <h2>التقدم الإجمالي</h2>
+                <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:1.5rem;">
+                    <h2 style="font-size:1.25rem; font-weight:bold">التقدم الإجمالي</h2>
                     <span class="status-badge" id="mainStatusBadge">جاري التحميل...</span>
                 </div>
                 <div class="progress-wrapper">
@@ -113,17 +149,17 @@
                 </div>
             </div>
 
+            <!-- Categories Grid -->
+            <div class="categories-grid" id="publicCategoriesGrid" style="margin-bottom: 2rem;">
+                <!-- Categories injected via JS -->
+            </div>
+
             <!-- Updates Feed -->
             <div class="card">
-                <h2>آخر التحديثات</h2>
+                <h2 style="font-size:1.25rem; font-weight:bold; margin-bottom:1.5rem">آخر التحديثات</h2>
                 <div id="updatesFeed" class="updates-container">
                     <!-- Updates injected via JS -->
                 </div>
-            </div>
-
-            <!-- Categories Grid -->
-            <div class="categories-grid" id="publicCategoriesGrid">
-                <!-- Categories injected via JS -->
             </div>
         </main>
     </div>
@@ -131,11 +167,11 @@
     <!-- LOGIN VIEW -->
     <div id="loginView" class="hidden login-screen">
         <div class="login-card">
-            <h2>تسجيل الدخول للمسؤولين</h2>
+            <h2 style="margin-bottom:1.5rem; text-align:center">تسجيل الدخول للمسؤولين</h2>
             <input type="email" id="emailInput" placeholder="البريد الإلكتروني" class="input">
             <input type="password" id="passwordInput" placeholder="كلمة المرور" class="input">
-            <button id="loginSubmitBtn" class="btn btn-primary" style="width:100%">تسجيل الدخول</button>
-            <button id="backToPublicBtn" class="btn btn-secondary" style="width:100%; margin-top:0.5rem">عودة</button>
+            <button id="loginSubmitBtn" class="btn btn-primary" style="width:100%; margin-bottom:0.75rem">تسجيل الدخول</button>
+            <button id="backToPublicBtn" class="btn btn-secondary" style="width:100%">عودة للرئيسية</button>
         </div>
     </div>
 
@@ -149,17 +185,9 @@
         </header>
 
         <main class="container main-content">
-            <!-- Manage Categories -->
-            <div class="card">
-                <h2>تحديث نسب الإنجاز</h2>
-                <div id="adminCategoriesList">
-                    <!-- Controls injected via JS -->
-                </div>
-            </div>
-
             <!-- Add Update -->
             <div class="card">
-                <h2>إضافة تحديث جديد</h2>
+                <h2 style="margin-bottom:1rem">إضافة تحديث جديد</h2>
                 <input type="text" id="updateTitle" placeholder="عنوان التحديث" class="input">
                 
                 <div class="formatting-toolbar">
@@ -168,23 +196,31 @@
                     <button id="fmtList" class="format-btn">• قائمة</button>
                 </div>
                 
-                <div id="updateDescription" contenteditable="true" class="editor" data-placeholder="اكتب التفاصيل هنا..."></div>
+                <div id="updateDescription" contenteditable="true" class="editor" data-placeholder="اكتب تفاصيل التحديث هنا..."></div>
                 
-                <div style="display:flex; gap:1rem;">
-                    <select id="updateType" class="select" style="margin-bottom:0">
+                <div class="comment-form-row">
+                    <select id="updateType" class="select" style="margin-bottom:0; flex:1">
                         <option value="info">معلومة (أزرق)</option>
                         <option value="success">نجاح (أخضر)</option>
                         <option value="warning">تنبيه (أصفر)</option>
                         <option value="error">مشكلة (أحمر)</option>
                     </select>
-                    <button id="postUpdateBtn" class="btn btn-primary">نشر التحديث</button>
+                    <button id="postUpdateBtn" class="btn btn-primary" style="flex:1">نشر التحديث</button>
+                </div>
+            </div>
+
+            <!-- Manage Categories -->
+            <div class="card">
+                <h2 style="margin-bottom:1rem">تحديث نسب الإنجاز</h2>
+                <div id="adminCategoriesList">
+                    <!-- Controls injected via JS -->
                 </div>
             </div>
         </main>
     </div>
 
     <script type="module">
-        // --- 1. MODULAR FIREBASE IMPORTS ---
+        // --- 1. FIREBASE IMPORTS ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { 
             getFirestore, 
@@ -196,6 +232,7 @@
             updateDoc, 
             doc,
             serverTimestamp,
+            arrayUnion,
             limit
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { 
@@ -207,28 +244,28 @@
             signInWithCustomToken
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-
-
         // --- 2. CONFIGURATION ---
+        // REPLACE THE OBJECT BELOW WITH YOUR REAL FIREBASE CONFIG FOR GITHUB
         const firebaseConfig = {
-            apiKey: "AIzaSyBSWlerN4B4aPjHIP5amber29xT_0CyiPE",
-            authDomain: "nma-migration.firebaseapp.com",
-            projectId: "nma-migration",
-            storageBucket: "nma-migration.firebasestorage.app",
-            messagingSenderId: "575093887394",
-            appId: "1:575093887394:web:a84c9a3dfb50354650a2fb",
-            measurementId: "G-G72RH6BPLV"
-            };
+        apiKey: "AIzaSyBSWlerN4B4aPjHIP5amber29xT_0CyiPE",
+        authDomain: "nma-migration.firebaseapp.com",
+        projectId: "nma-migration",
+        storageBucket: "nma-migration.firebasestorage.app",
+        messagingSenderId: "575093887394",
+        appId: "1:575093887394:web:a84c9a3dfb50354650a2fb",
+        measurementId: "G-G72RH6BPLV"
+        };
+        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const appId = 'nma-migration';
+        const appId = 'nma-tracker';
 
         // --- 3. STATE ---
         let categories = [];
         let currentUser = null;
 
-        // --- 4. INITIALIZATION FLOW ---
+        // --- 4. INITIALIZATION ---
         const initAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -238,22 +275,16 @@
                 }
             } catch (error) {
                 console.error("Auth Error:", error);
-                document.getElementById('loadingOverlay').innerText = "خطأ في المصادقة: " + error.message;
+                document.getElementById('loadingText').innerText = "خطأ في الاتصال";
             }
         };
 
-        // Start App
         initAuth();
 
-        // Listen to Auth Changes
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
-                // If user is logged in (even anonymously), load data
                 subscribeToData();
-                
-                // Update UI based on whether it's an admin (email) or guest (anon)
-                // Note: In this simple app, we check isAnonymous to decide UI buttons
                 if (!user.isAnonymous) {
                     document.getElementById('adminBtn').textContent = "لوحة التحكم";
                     document.getElementById('logoutBtn').classList.remove('hidden');
@@ -264,146 +295,219 @@
             }
         });
 
-        // --- 5. DATA FETCHING ---
+        // --- 5. DATA LOGIC ---
         function subscribeToData() {
-            if (!currentUser) return;
-
             const catsRef = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
             const updatesRef = collection(db, 'artifacts', appId, 'public', 'data', 'updates');
 
-            // 1. Listen to Categories
-            const catQuery = query(catsRef, orderBy('order'));
-            onSnapshot(catQuery, (snapshot) => {
+            // Categories
+            onSnapshot(query(catsRef, orderBy('order')), (snapshot) => {
                 categories = [];
-                snapshot.forEach(d => {
-                    categories.push({ id: d.id, ...d.data() });
-                });
+                snapshot.forEach(d => categories.push({ id: d.id, ...d.data() }));
                 renderPublicCategories();
                 renderAdminCategories();
                 calculateOverallProgress();
                 document.getElementById('loadingOverlay').classList.add('hidden');
-                
-                // Auto-seed if empty
                 if (categories.length === 0) setupInitialData();
-            }, (error) => {
-                console.error("Error fetching categories:", error);
-                document.getElementById('loadingOverlay').innerText = "خطأ في تحميل البيانات. " + error.message;
             });
 
-            // 2. Listen to Updates
-            const updatesQuery = query(updatesRef, orderBy('timestamp', 'desc'), limit(10));
-            onSnapshot(updatesQuery, (snapshot) => {
+            // Updates
+            onSnapshot(query(updatesRef, orderBy('timestamp', 'desc'), limit(10)), (snapshot) => {
                 const updatesDiv = document.getElementById('updatesFeed');
                 if (snapshot.empty) {
-                    updatesDiv.innerHTML = '<p style="text-align:center; color:#888">لا توجد تحديثات بعد</p>';
+                    updatesDiv.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:2rem">لا توجد تحديثات حتى الآن</p>';
                     return;
                 }
                 
                 updatesDiv.innerHTML = '';
                 snapshot.forEach(d => {
                     const data = d.data();
-                    const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-EG') : '';
-                    
-                    const html = `
-                        <div class="update-card update-${data.type}">
-                            <div class="update-header">
-                                <h3>${data.title}</h3>
-                                <span class="update-time">${date}</span>
-                            </div>
-                            <div style="margin-top:0.5rem; line-height:1.6">${data.description}</div>
-                        </div>
-                    `;
-                    updatesDiv.innerHTML += html;
+                    renderSingleUpdate(d.id, data, updatesDiv);
                 });
-            }, (error) => {
-                console.error("Error fetching updates:", error);
             });
         }
 
-        // --- 6. RENDER HELPERS ---
+        function renderSingleUpdate(id, data, container) {
+            const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-EG') : '';
+            const comments = data.comments || [];
+            
+            // Logic for thread display
+            let commentsHtml = '';
+            if (comments.length > 0) {
+                const latestComment = comments[comments.length - 1];
+                const hiddenCount = comments.length - 1;
+                
+                // Hidden thread part
+                let hiddenThread = '';
+                if (hiddenCount > 0) {
+                    hiddenThread = `
+                        <div id="thread-${id}" class="hidden">
+                            ${comments.slice(0, comments.length - 1).map(c => `
+                                <div class="comment-bubble" style="opacity:0.8; margin-bottom:0.5rem">
+                                    <div class="comment-meta">
+                                        <span class="comment-author">${c.user}</span>
+                                        <span>${new Date(c.timestamp).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'})}</span>
+                                    </div>
+                                    <div>${c.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button onclick="window.toggleThread('${id}')" id="btn-thread-${id}" class="btn-text" style="margin-bottom:0.5rem">
+                            عرض ${hiddenCount} تعليقات سابقة...
+                        </button>
+                    `;
+                }
+
+                // Latest comment (Always visible)
+                commentsHtml = `
+                    <div class="comments-section">
+                        ${hiddenThread}
+                        <div class="comment-bubble" style="border-left: 3px solid #3b82f6;">
+                            <div class="comment-meta">
+                                <span class="comment-author">${latestComment.user}</span>
+                                <span>${new Date(latestComment.timestamp).toLocaleString('ar-EG')}</span>
+                            </div>
+                            <div>${latestComment.text}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const html = `
+                <div class="update-card update-${data.type}">
+                    <div class="update-header">
+                        <h3 style="font-weight:bold; font-size:1.1rem">${data.title}</h3>
+                        <span class="update-time">${date}</span>
+                    </div>
+                    <div class="update-body">${data.description}</div>
+                    
+                    ${commentsHtml}
+                    
+                    <button onclick="window.toggleCommentForm('${id}')" class="btn-ghost btn" style="margin-top:1rem; width:100%; padding:0.4rem; font-size:0.8rem">
+                        💬 إضافة تعليق
+                    </button>
+                    
+                    <div id="form-${id}" class="comment-form hidden">
+                        <input type="text" id="name-${id}" placeholder="الاسم" class="input" style="margin-bottom:0.5rem">
+                        <textarea id="text-${id}" placeholder="اكتب تعليقك هنا..." class="input" style="min-height:60px"></textarea>
+                        <div style="display:flex; gap:0.5rem">
+                            <button onclick="window.submitComment('${id}')" class="btn btn-primary" style="flex:1">إرسال</button>
+                            <button onclick="window.toggleCommentForm('${id}')" class="btn btn-secondary">إلغاء</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += html;
+        }
+
+        // --- 6. HELPERS ---
         function calculateOverallProgress() {
             if (categories.length === 0) return;
             const total = categories.reduce((sum, cat) => sum + (cat.progress || 0), 0);
             const avg = Math.round(total / categories.length);
-            
             document.getElementById('overallProgressBar').style.width = avg + '%';
             document.getElementById('overallProgressText').innerText = avg + '%';
             
-            let statusText = "لم يبدأ";
-            let statusClass = "status-not-started";
-            
-            if (avg > 0 && avg < 100) { statusText = "جاري العمل"; statusClass = "status-in-progress"; }
-            else if (avg === 100) { statusText = "مكتمل"; statusClass = "status-complete"; }
+            let status = { text: "لم يبدأ", class: "not-started" };
+            if (avg > 0 && avg < 100) status = { text: "جاري العمل", class: "in-progress" };
+            else if (avg === 100) status = { text: "مكتمل", class: "complete" };
             
             const badge = document.getElementById('mainStatusBadge');
-            badge.innerText = statusText;
-            badge.className = `status-badge ${statusClass}`;
+            badge.innerText = status.text;
+            badge.className = `status-badge status-${status.class}`;
         }
 
         function renderPublicCategories() {
-            const grid = document.getElementById('publicCategoriesGrid');
-            grid.innerHTML = categories.map(cat => `
+            document.getElementById('publicCategoriesGrid').innerHTML = categories.map(cat => `
                 <div class="category-card">
                     <div class="category-header">
-                        <b>${cat.name}</b>
+                        <b style="font-size:1.05rem">${cat.name}</b>
                         <span class="status-badge status-${getStatusClass(cat.status)}">${cat.status}</span>
                     </div>
-                    <div class="progress-bar" style="height:1rem">
+                    <div class="progress-bar" style="height:0.75rem; background:#f1f5f9">
                         <div class="progress-fill" style="width:${cat.progress}%"></div>
                     </div>
-                    <div style="text-align:left; margin-top:5px; font-size:0.8rem">${cat.progress}%</div>
+                    <div style="text-align:left; margin-top:5px; font-size:0.8rem; color:#64748b; font-weight:600">${cat.progress}%</div>
                 </div>
             `).join('');
         }
 
         function renderAdminCategories() {
             const list = document.getElementById('adminCategoriesList');
-            // We use data-attributes to store IDs for event delegation
             list.innerHTML = categories.map(cat => `
                 <div class="category-control">
-                    <div style="width:150px; font-weight:bold">${cat.name}</div>
+                    <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:0.5rem">
+                        <strong>${cat.name}</strong>
+                        <span>${cat.progress}%</span>
+                    </div>
                     <input type="range" min="0" max="100" value="${cat.progress}" 
-                           data-id="${cat.id}" class="progress-slider" style="flex:1">
-                    <span style="width:50px; text-align:center">${cat.progress}%</span>
-                    <select data-id="${cat.id}" class="status-select select" style="width:120px; margin:0">
-                        <option value="لم يبدأ" ${cat.status === 'لم يبدأ' ? 'selected' : ''}>لم يبدأ</option>
-                        <option value="جاري العمل" ${cat.status === 'جاري العمل' ? 'selected' : ''}>جاري العمل</option>
-                        <option value="مكتمل" ${cat.status === 'مكتمل' ? 'selected' : ''}>مكتمل</option>
+                           data-id="${cat.id}" class="progress-slider" style="width:100%; margin-bottom:0.5rem">
+                    <select data-id="${cat.id}" class="status-select select" style="width:100%; margin:0">
+                        <option ${cat.status === 'لم يبدأ' ? 'selected' : ''}>لم يبدأ</option>
+                        <option ${cat.status === 'جاري العمل' ? 'selected' : ''}>جاري العمل</option>
+                        <option ${cat.status === 'مكتمل' ? 'selected' : ''}>مكتمل</option>
                     </select>
                 </div>
             `).join('');
 
-            // Re-attach listeners because we used innerHTML
-            document.querySelectorAll('.progress-slider').forEach(input => {
-                input.addEventListener('change', (e) => updateCategory(e.target.dataset.id, 'progress', e.target.value));
-            });
-            document.querySelectorAll('.status-select').forEach(select => {
-                select.addEventListener('change', (e) => updateCategory(e.target.dataset.id, 'status', e.target.value));
-            });
+            document.querySelectorAll('.progress-slider').forEach(i => 
+                i.addEventListener('change', (e) => updateCat(e.target.dataset.id, 'progress', e.target.value)));
+            document.querySelectorAll('.status-select').forEach(s => 
+                s.addEventListener('change', (e) => updateCat(e.target.dataset.id, 'status', e.target.value)));
         }
 
-        function getStatusClass(status) {
-            if (status === 'مكتمل') return 'complete';
-            if (status === 'جاري العمل') return 'in-progress';
+        function getStatusClass(s) {
+            if (s === 'مكتمل') return 'complete';
+            if (s === 'جاري العمل') return 'in-progress';
             return 'not-started';
         }
 
-        // --- 7. EVENT HANDLERS ---
-        // We attach these to window or addEventListener because type="module" has its own scope
-        
-        // Navigation
-        document.getElementById('adminBtn').onclick = () => toggleView('login');
-        document.getElementById('logoutBtn').onclick = () => {
-             signOut(auth).then(() => {
-                 signInAnonymously(auth); // Go back to guest mode
-                 toggleView('public');
-             });
+        // --- 7. EXPORTED FUNCTIONS (Attached to Window) ---
+        window.toggleCommentForm = (id) => {
+            document.getElementById(`form-${id}`).classList.toggle('hidden');
         };
+
+        window.toggleThread = (id) => {
+            document.getElementById(`thread-${id}`).classList.remove('hidden');
+            document.getElementById(`btn-thread-${id}`).classList.add('hidden');
+        };
+
+        window.submitComment = async (id) => {
+            const name = document.getElementById(`name-${id}`).value.trim();
+            const text = document.getElementById(`text-${id}`).value.trim();
+            
+            if (!name || !text) return alert("الرجاء إدخال الاسم والتعليق");
+            
+            const btn = event.target; // Simple way to get button to disable it
+            btn.disabled = true;
+            btn.innerText = "...";
+
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'updates', id);
+                await updateDoc(docRef, {
+                    comments: arrayUnion({
+                        user: name,
+                        text: text,
+                        timestamp: Date.now() // Use client time for array object simplicity
+                    })
+                });
+                // Form clears automatically on re-render via onSnapshot
+            } catch (e) {
+                alert("خطأ: " + e.message);
+                btn.disabled = false;
+                btn.innerText = "إرسال";
+            }
+        };
+
+        // --- 8. EVENT HANDLERS & ADMIN ---
+        document.getElementById('adminBtn').onclick = () => toggleView('login');
+        document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => {
+            signInAnonymously(auth);
+            toggleView('public');
+        });
         document.getElementById('loginSubmitBtn').onclick = handleLogin;
         document.getElementById('backToPublicBtn').onclick = () => toggleView('public');
         document.getElementById('viewSiteBtn').onclick = () => toggleView('public');
-        
-        // Post Update
         document.getElementById('postUpdateBtn').onclick = postUpdate;
 
         // Formatting
@@ -414,55 +518,48 @@
         function handleLogin() {
             const email = document.getElementById('emailInput').value;
             const pass = document.getElementById('passwordInput').value;
-            
             signInWithEmailAndPassword(auth, email, pass)
                 .then(() => toggleView('dashboard'))
-                .catch(e => alert("خطأ في تسجيل الدخول: " + e.message));
+                .catch(e => alert("خطأ: " + e.message));
         }
 
-        function updateCategory(id, field, value) {
+        function updateCat(id, field, value) {
             if (field === 'progress') value = parseInt(value);
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'categories', id);
-            updateDoc(docRef, { [field]: value })
-                .catch(e => alert("Error updating: " + e.message));
+            updateDoc(docRef, { [field]: value });
         }
 
         function postUpdate() {
             const title = document.getElementById('updateTitle').value;
             const desc = document.getElementById('updateDescription').innerHTML;
             const type = document.getElementById('updateType').value;
-
             if (!title) return alert("الرجاء كتابة عنوان");
 
-            const updatesRef = collection(db, 'artifacts', appId, 'public', 'data', 'updates');
-            addDoc(updatesRef, {
-                title: title,
-                description: desc,
-                type: type,
-                timestamp: serverTimestamp()
+            addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'updates'), {
+                title, description: desc, type,
+                timestamp: serverTimestamp(),
+                comments: []
             }).then(() => {
-                alert("تم النشر بنجاح");
+                alert("تم النشر");
                 document.getElementById('updateTitle').value = '';
                 document.getElementById('updateDescription').innerHTML = '';
-            }).catch(e => alert("خطأ: " + e.message));
+            });
         }
 
-        function toggleView(viewName) {
+        function toggleView(view) {
             document.getElementById('publicView').classList.add('hidden');
             document.getElementById('loginView').classList.add('hidden');
             document.getElementById('dashboardView').classList.add('hidden');
-
-            if (viewName === 'public') document.getElementById('publicView').classList.remove('hidden');
-            if (viewName === 'login') {
-                if(currentUser && !currentUser.isAnonymous) toggleView('dashboard');
+            if (view === 'public') document.getElementById('publicView').classList.remove('hidden');
+            else if (view === 'dashboard') document.getElementById('dashboardView').classList.remove('hidden');
+            else if (view === 'login') {
+                if (currentUser && !currentUser.isAnonymous) toggleView('dashboard');
                 else document.getElementById('loginView').classList.remove('hidden');
             }
-            if (viewName === 'dashboard') document.getElementById('dashboardView').classList.remove('hidden');
         }
 
-        // --- 8. SEED DATA ---
         async function setupInitialData() {
-            const initialCats = [
+            const cats = [
                 { name: "نقل العملاء", progress: 0, status: "لم يبدأ", order: 1 },
                 { name: "ربط أودو", progress: 0, status: "لم يبدأ", order: 2 },
                 { name: "ربط بوابات الدفع", progress: 0, status: "لم يبدأ", order: 3 },
@@ -470,12 +567,8 @@
                 { name: "تطوير القالب", progress: 0, status: "لم يبدأ", order: 5 },
                 { name: "الاختبارات", progress: 0, status: "لم يبدأ", order: 6 }
             ];
-            
-            const catsRef = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
-            for (const cat of initialCats) {
-                await addDoc(catsRef, cat);
-            }
-            console.log("Categories seeded!");
+            const ref = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
+            for (const c of cats) await addDoc(ref, c);
         }
     </script>
 </body>
