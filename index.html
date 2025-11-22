@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>انتقال NMA من زد إلى شوبيفاي</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1>انتقال NMA من زد إلى شوبيفاي</h1>
+                    <p class="subtitle">تابع تقدم عملية الانتقال بشكل مباشر</p>
+                </div>
+                <a href="dashboard.html" class="admin-link">لوحة التحكم ←</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <!-- Overall Progress Card -->
+        <div class="card progress-card">
+            <div class="card-header">
+                <div>
+                    <h2>التقدم الإجمالي</h2>
+                    <p class="last-update" id="lastUpdate">جاري التحميل...</p>
+                </div>
+                <span class="status-badge" id="statusBadge">لم يبدأ</span>
+            </div>
+            
+            <div class="progress-wrapper">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="overallProgress"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+        </div>
+
+        <!-- Updates Timeline -->
+        <div class="card">
+            <h2>آخر التحديثات</h2>
+            <div id="updatesContainer" class="updates-container">
+                <p class="empty-state">لا توجد تحديثات بعد</p>
+            </div>
+        </div>
+
+        <!-- Category Progress -->
+        <div class="categories-grid" id="categoriesGrid">
+            <!-- Categories will be loaded here -->
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-title">NMA - نسيج الموضة الأنيقة</p>
+            <p class="footer-text">جاري الانتقال من منصة زد إلى شوبيفاي لتحسين تجربة التسوق</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize status page
+        loadStatusPage();
+    </script>
+</body>
+</html>

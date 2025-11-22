@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - NMA</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h2>لوحة التحكم - NMA</h2>
+            <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" class="input">
+            <button onclick="handleLogin()" class="btn btn-primary">تسجيل الدخول</button>
+            <a href="index.html" class="back-link">→ العودة لصفحة الحالة</a>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboardScreen" class="hidden">
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <h1>لوحة تحكم الانتقال - NMA</h1>
+                    <a href="index.html" class="btn btn-secondary">عرض صفحة الحالة</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="container main-content">
+            <!-- Category Management -->
+            <div class="card">
+                <h2>تقدم الفئات</h2>
+                <div id="categoryControls"></div>
+            </div>
+
+            <!-- Add New Update -->
+            <div class="card">
+                <h2>إضافة تحديث جديد</h2>
+                <div class="form-group">
+                    <input type="text" id="updateTitle" placeholder="عنوان التحديث" class="input">
+                    <textarea id="updateDescription" placeholder="وصف التحديث (اختياري)" class="textarea" rows="3"></textarea>
+                    <div class="form-row">
+                        <select id="updateType" class="select">
+                            <option value="info">معلومة</option>
+                            <option value="success">نجاح</option>
+                            <option value="warning">تحذير</option>
+                            <option value="error">خطأ</option>
+                        </select>
+                        <button onclick="handleAddUpdate()" class="btn btn-primary">
+                            ➕ إضافة تحديث
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing Updates -->
+            <div class="card">
+                <h2>إدارة التحديثات</h2>
+                <div id="updatesManagement"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize dashboard
+        initDashboard();
+    </script>
+</body>
+</html>
