@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم - NMA</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <!-- Login Screen -->
@@ -40,7 +40,31 @@
                 <h2>إضافة تحديث جديد</h2>
                 <div class="form-group">
                     <input type="text" id="updateTitle" placeholder="عنوان التحديث" class="input">
-                    <textarea id="updateDescription" placeholder="وصف التحديث (اختياري)" class="textarea" rows="3"></textarea>
+                    
+                    <!-- Formatting Toolbar -->
+                    <div class="formatting-toolbar">
+                        <button type="button" onclick="formatText('bold')" class="format-btn" title="عريض">
+                            <strong>B</strong>
+                        </button>
+                        <button type="button" onclick="formatText('italic')" class="format-btn" title="مائل">
+                            <em>I</em>
+                        </button>
+                        <button type="button" onclick="formatText('insertUnorderedList')" class="format-btn" title="قائمة نقطية">
+                            • قائمة
+                        </button>
+                        <button type="button" onclick="formatText('insertOrderedList')" class="format-btn" title="قائمة مرقمة">
+                            1. قائمة
+                        </button>
+                        <button type="button" onclick="clearFormatting()" class="format-btn" title="مسح التنسيق">
+                            ✕
+                        </button>
+                    </div>
+                    
+                    <div id="updateDescription" 
+                         contenteditable="true" 
+                         class="editor" 
+                         data-placeholder="وصف التحديث (اختياري) - يمكنك استخدام التنسيق من الأعلى"></div>
+                    
                     <div class="form-row">
                         <select id="updateType" class="select">
                             <option value="info">معلومة</option>
