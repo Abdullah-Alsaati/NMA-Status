@@ -46,8 +46,10 @@
         .btn-danger:hover { background: #fecaca; }
         .btn-text { background: none; color: #6b7280; padding: 0; text-decoration: underline; font-size: 0.8rem; }
         .btn-ghost { background: transparent; color: #4b5563; border: 1px solid #d1d5db; }
-        .btn-icon { padding: 0.5rem; border-radius: 0.25rem; cursor: pointer; border: 1px solid #e2e8f0; background: white; color: #ef4444; }
-        .btn-icon:hover { background: #fee2e2; }
+        .btn-icon { padding: 0.5rem; border-radius: 0.25rem; cursor: pointer; border: 1px solid #e2e8f0; background: white; color: #475569; }
+        .btn-icon:hover { background: #f1f5f9; color: #1e293b; }
+        .btn-icon.delete:hover { background: #fee2e2; color: #ef4444; }
+        .btn-icon.edit:hover { background: #dbeafe; color: #2563eb; }
         
         /* Layout & Cards */
         .main-content { padding: 0; }
@@ -73,6 +75,11 @@
         .update-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
         .update-time { font-size: 0.75rem; color: #9ca3af; white-space: nowrap; }
         .update-body { color: #374151; line-height: 1.6; font-size: 0.95rem; }
+
+        /* Admin Update List Item */
+        .admin-update-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; margin-bottom: 0.5rem; background: #fff; }
+        .admin-update-info { flex: 1; margin-left: 1rem; }
+        .admin-update-actions { display: flex; gap: 0.5rem; }
 
         /* Comments Section */
         .comments-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #f1f5f9; }
@@ -209,9 +216,13 @@
                 </div>
             </div>
 
-            <!-- Add Update -->
-            <div class="card">
-                <h2 style="margin-bottom:1rem">إضافة تحديث جديد</h2>
+            <!-- Add/Edit Update -->
+            <div class="card" id="updateFormCard">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem">
+                    <h2 id="formHeader">إضافة تحديث جديد</h2>
+                    <button id="cancelEditBtn" class="btn btn-text hidden" style="color:#ef4444">إلغاء التعديل ✕</button>
+                </div>
+
                 <input type="text" id="updateTitle" placeholder="عنوان التحديث" class="input">
                 
                 <div class="formatting-toolbar">
@@ -230,6 +241,14 @@
                         <option value="error">مشكلة (أحمر)</option>
                     </select>
                     <button id="postUpdateBtn" class="btn btn-primary" style="flex:1">نشر التحديث</button>
+                </div>
+            </div>
+
+            <!-- Manage Posted Updates -->
+            <div class="card">
+                <h2 style="margin-bottom:1rem">إدارة التحديثات المنشورة</h2>
+                <div id="adminUpdatesList">
+                    <!-- Updates List injected via JS -->
                 </div>
             </div>
         </main>
@@ -262,7 +281,6 @@
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         // --- 2. CONFIGURATION ---
-        // REPLACE THE OBJECT BELOW WITH YOUR REAL FIREBASE CONFIG FOR GITHUB
         const firebaseConfig = {
         apiKey: "AIzaSyBSWlerN4B4aPjHIP5amber29xT_0CyiPE",
         authDomain: "nma-migration.firebaseapp.com",
@@ -280,7 +298,9 @@
 
         // --- 3. STATE ---
         let categories = [];
+        let updatesList = [];
         let currentUser = null;
+        let editingUpdateId = null;
 
         // --- 4. INITIALIZATION ---
         const initAuth = async () => {
@@ -325,23 +345,59 @@
                 renderAdminCategories();
                 calculateOverallProgress();
                 document.getElementById('loadingOverlay').classList.add('hidden');
-                // I disabled auto-seeding to prevent duplicates. You can now add tasks manually.
             });
 
-            // Updates
-            onSnapshot(query(updatesRef, orderBy('timestamp', 'desc'), limit(10)), (snapshot) => {
-                const updatesDiv = document.getElementById('updatesFeed');
-                if (snapshot.empty) {
-                    updatesDiv.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:2rem">لا توجد تحديثات حتى الآن</p>';
-                    return;
-                }
+            // Updates (Fetch more for admin view if needed, but 20 is usually enough for recent management)
+            onSnapshot(query(updatesRef, orderBy('timestamp', 'desc'), limit(20)), (snapshot) => {
+                updatesList = [];
+                snapshot.forEach(d => updatesList.push({ id: d.id, ...d.data() }));
                 
-                updatesDiv.innerHTML = '';
-                snapshot.forEach(d => {
-                    const data = d.data();
-                    renderSingleUpdate(d.id, data, updatesDiv);
-                });
+                renderUpdatesFeed();
+                renderAdminUpdates();
             });
+        }
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderUpdatesFeed() {
+            const updatesDiv = document.getElementById('updatesFeed');
+            if (updatesList.length === 0) {
+                updatesDiv.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:2rem">لا توجد تحديثات حتى الآن</p>';
+                return;
+            }
+            
+            updatesDiv.innerHTML = '';
+            updatesList.forEach(data => {
+                renderSingleUpdate(data.id, data, updatesDiv);
+            });
+        }
+
+        function renderAdminUpdates() {
+            const container = document.getElementById('adminUpdatesList');
+            if (updatesList.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#94a3b8;">لا توجد تحديثات</p>';
+                return;
+            }
+
+            container.innerHTML = updatesList.map(u => `
+                <div class="admin-update-item">
+                    <div class="admin-update-info">
+                        <div style="font-weight:bold">${u.title}</div>
+                        <div style="font-size:0.8rem; color:#64748b">${u.timestamp ? new Date(u.timestamp.toDate()).toLocaleDateString('ar-EG') : ''}</div>
+                    </div>
+                    <div class="admin-update-actions">
+                        <button class="btn-icon edit" data-id="${u.id}" title="تعديل">✏️</button>
+                        <button class="btn-icon delete delete-update-btn" data-id="${u.id}" title="حذف">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Attach Listeners
+            container.querySelectorAll('.edit').forEach(b => 
+                b.addEventListener('click', (e) => loadUpdateForEdit(e.target.closest('button').dataset.id)));
+            
+            container.querySelectorAll('.delete-update-btn').forEach(b => 
+                b.addEventListener('click', (e) => deleteUpdate(e.target.closest('button').dataset.id)));
         }
 
         function renderSingleUpdate(id, data, container) {
@@ -354,7 +410,6 @@
                 const latestComment = comments[comments.length - 1];
                 const hiddenCount = comments.length - 1;
                 
-                // Hidden thread part
                 let hiddenThread = '';
                 if (hiddenCount > 0) {
                     hiddenThread = `
@@ -375,7 +430,6 @@
                     `;
                 }
 
-                // Latest comment (Always visible)
                 commentsHtml = `
                     <div class="comments-section">
                         ${hiddenThread}
@@ -483,12 +537,8 @@
             document.querySelectorAll('.status-select').forEach(s => 
                 s.addEventListener('change', (e) => updateCat(e.target.dataset.id, 'status', e.target.value)));
 
-            // Add delete listeners
             document.querySelectorAll('.delete-cat-btn').forEach(b => 
-                b.addEventListener('click', (e) => {
-                    const id = e.target.closest('button').dataset.id; // ensure we get ID even if icon clicked
-                    deleteCategory(id);
-                }));
+                b.addEventListener('click', (e) => deleteCategory(e.target.closest('button').dataset.id)));
         }
 
         function getStatusClass(s) {
@@ -497,7 +547,43 @@
             return 'not-started';
         }
 
-        // --- 7. EXPORTED FUNCTIONS (Attached to Window) ---
+        // --- 7. EDIT/DELETE LOGIC ---
+        function loadUpdateForEdit(id) {
+            const update = updatesList.find(u => u.id === id);
+            if (!update) return;
+
+            editingUpdateId = id;
+            document.getElementById('updateTitle').value = update.title;
+            document.getElementById('updateDescription').innerHTML = update.description;
+            document.getElementById('updateType').value = update.type;
+            
+            document.getElementById('postUpdateBtn').textContent = "حفظ التعديلات";
+            document.getElementById('formHeader').textContent = "تعديل التحديث";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            
+            // Scroll to form
+            document.getElementById('updateFormCard').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function cancelEdit() {
+            editingUpdateId = null;
+            document.getElementById('updateTitle').value = '';
+            document.getElementById('updateDescription').innerHTML = '';
+            document.getElementById('updateType').value = 'info';
+            
+            document.getElementById('postUpdateBtn').textContent = "نشر التحديث";
+            document.getElementById('formHeader').textContent = "إضافة تحديث جديد";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
+
+        function deleteUpdate(id) {
+            if (confirm('هل أنت متأكد من حذف هذا التحديث؟')) {
+                deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'updates', id))
+                    .catch(e => alert(e.message));
+            }
+        }
+
+        // --- 8. EXPORTED FUNCTIONS ---
         window.toggleCommentForm = (id) => {
             document.getElementById(`form-${id}`).classList.toggle('hidden');
         };
@@ -510,31 +596,21 @@
         window.submitComment = async (id) => {
             const name = document.getElementById(`name-${id}`).value.trim();
             const text = document.getElementById(`text-${id}`).value.trim();
-            
             if (!name || !text) return alert("الرجاء إدخال الاسم والتعليق");
-            
-            const btn = event.target; // Simple way to get button to disable it
-            btn.disabled = true;
-            btn.innerText = "...";
-
+            const btn = event.target; 
+            btn.disabled = true; btn.innerText = "...";
             try {
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'updates', id);
                 await updateDoc(docRef, {
-                    comments: arrayUnion({
-                        user: name,
-                        text: text,
-                        timestamp: Date.now() // Use client time for array object simplicity
-                    })
+                    comments: arrayUnion({ user: name, text: text, timestamp: Date.now() })
                 });
-                // Form clears automatically on re-render via onSnapshot
             } catch (e) {
                 alert("خطأ: " + e.message);
-                btn.disabled = false;
-                btn.innerText = "إرسال";
+                btn.disabled = false; btn.innerText = "إرسال";
             }
         };
 
-        // --- 8. EVENT HANDLERS & ADMIN ---
+        // --- 9. EVENT HANDLERS ---
         document.getElementById('adminBtn').onclick = () => toggleView('login');
         document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => {
             signInAnonymously(auth);
@@ -544,23 +620,16 @@
         document.getElementById('backToPublicBtn').onclick = () => toggleView('public');
         document.getElementById('viewSiteBtn').onclick = () => toggleView('public');
         document.getElementById('postUpdateBtn').onclick = postUpdate;
+        document.getElementById('cancelEditBtn').onclick = cancelEdit;
         
-        // Add Category
         document.getElementById('addCatBtn').onclick = () => {
             const name = document.getElementById('newCatName').value.trim();
             if(!name) return alert('الرجاء كتابة اسم المهمة');
-            
             addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'categories'), {
-                name: name,
-                progress: 0,
-                status: 'لم يبدأ',
-                order: categories.length + 1 // Add to end
-            }).then(() => {
-                document.getElementById('newCatName').value = '';
-            }).catch(e => alert(e.message));
+                name: name, progress: 0, status: 'لم يبدأ', order: categories.length + 1
+            }).then(() => document.getElementById('newCatName').value = '').catch(e => alert(e.message));
         };
 
-        // Formatting
         document.getElementById('fmtBold').onclick = () => document.execCommand('bold', false, null);
         document.getElementById('fmtItalic').onclick = () => document.execCommand('italic', false, null);
         document.getElementById('fmtList').onclick = () => document.execCommand('insertUnorderedList', false, null);
@@ -581,8 +650,7 @@
 
         function deleteCategory(id) {
             if(confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
-                deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', id))
-                    .catch(e => alert(e.message));
+                deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', id)).catch(e => alert(e.message));
             }
         }
 
@@ -592,15 +660,27 @@
             const type = document.getElementById('updateType').value;
             if (!title) return alert("الرجاء كتابة عنوان");
 
-            addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'updates'), {
-                title, description: desc, type,
-                timestamp: serverTimestamp(),
-                comments: []
-            }).then(() => {
-                alert("تم النشر");
-                document.getElementById('updateTitle').value = '';
-                document.getElementById('updateDescription').innerHTML = '';
-            });
+            if (editingUpdateId) {
+                // Update existing
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'updates', editingUpdateId);
+                updateDoc(docRef, {
+                    title, description: desc, type
+                }).then(() => {
+                    alert("تم حفظ التعديلات");
+                    cancelEdit();
+                }).catch(e => alert(e.message));
+            } else {
+                // Create new
+                addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'updates'), {
+                    title, description: desc, type,
+                    timestamp: serverTimestamp(),
+                    comments: []
+                }).then(() => {
+                    alert("تم النشر");
+                    document.getElementById('updateTitle').value = '';
+                    document.getElementById('updateDescription').innerHTML = '';
+                });
+            }
         }
 
         function toggleView(view) {
