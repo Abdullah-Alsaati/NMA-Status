@@ -397,6 +397,13 @@ body {
     padding: 1.5rem;
 }
 
+@media (max-width: 400px) {
+    .category-card {
+        width: 90%;
+        justify-self: center;
+    }
+}
+
 .category-header {
     display: flex;
     justify-content: space-between;
