@@ -4,65 +4,479 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>انتقال NMA من زد إلى شوبيفاي</title>
-    <link rel="stylesheet" href="./style.css">
+    
+    <style>
+        /* --- CSS STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #e8eaf6 100%);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        
+        /* Header */
+        .header { background: white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-bottom: 1px solid #e2e8f0; padding: 1.5rem 0; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+        .header h1 { font-size: 1.875rem; font-weight: bold; color: #1a202c; }
+        .subtitle { color: #718096; margin-top: 0.25rem; }
+
+        /* Buttons */
+        .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; transition: all 0.2s; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-secondary { background: #e5e7eb; color: #374151; }
+        .btn-secondary:hover { background: #d1d5db; }
+        .btn-danger { background: #fee2e2; color: #991b1b; }
+        .btn-danger:hover { background: #fecaca; }
+
+        /* Layout & Cards */
+        .main-content { padding: 2rem 0; }
+        .card { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 2rem; margin-bottom: 2rem; }
+        .hidden { display: none !important; }
+        
+        /* Progress Bar */
+        .progress-wrapper { margin-top: 1rem; }
+        .progress-bar { width: 100%; height: 2rem; background: #e5e7eb; border-radius: 9999px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(to right, #3b82f6, #6366f1); transition: width 0.5s ease; width: 0%; }
+        .progress-text { text-align: center; margin-top: 0.5rem; font-size: 1.5rem; font-weight: bold; }
+
+        /* Updates Styling */
+        .updates-container { display: flex; flex-direction: column; gap: 1.5rem; }
+        .update-card { border: 1px solid; border-radius: 0.5rem; padding: 1.25rem; background: white; }
+        .update-info { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+        .update-success { background: #dcfce7; border-color: #86efac; color: #15803d; }
+        .update-warning { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
+        .update-error { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+        .update-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .update-time { font-size: 0.75rem; opacity: 0.75; }
+
+        /* Dashboard Specifics */
+        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .login-card { background: white; border-radius: 0.75rem; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .input, .select, .textarea { width: 100%; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; margin-bottom: 1rem; }
+        
+        /* Rich Text Editor */
+        .editor { width: 100%; min-height: 120px; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; margin-bottom: 1rem; background: white; overflow-y: auto; }
+        .editor:focus { outline: 2px solid #3b82f6; }
+        .formatting-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+        .format-btn { padding: 0.25rem 0.5rem; background: white; border: 1px solid #d1d5db; border-radius: 0.25rem; cursor: pointer; }
+
+        /* Categories */
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .category-card { background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .category-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .status-not-started { background: #f3f4f6; color: #6b7280; }
+        .status-in-progress { background: #dbeafe; color: #2563eb; }
+        .status-complete { background: #dcfce7; color: #16a34a; }
+        
+        .category-control { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #eee; }
+        
+        /* Loading Overlay */
+        #loadingOverlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 50; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: #3b82f6; }
+    </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div>
-                    <h1>انتقال NMA من زد إلى شوبيفاي</h1>
-                    <p class="subtitle">تابع تقدم عملية الانتقال بشكل مباشر</p>
-                </div>
-                <a href="./dashboard.HTML" class="admin-link">لوحة التحكم ←</a>
-            </div>
-        </div>
-    </header>
 
-    <main class="container main-content">
-        <!-- Overall Progress Card -->
-        <div class="card progress-card">
-            <div class="card-header">
-                <div>
+    <!-- Loading State -->
+    <div id="loadingOverlay">جاري الاتصال بقاعدة البيانات...</div>
+
+    <!-- MAIN VIEW (Public) -->
+    <div id="publicView">
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div>
+                        <h1>انتقال NMA من زد إلى شوبيفاي</h1>
+                        <p class="subtitle">تابع تقدم عملية الانتقال بشكل مباشر</p>
+                    </div>
+                    <button id="adminBtn" class="btn btn-secondary">لوحة التحكم ←</button>
+                    <button id="logoutBtn" class="btn btn-danger hidden">تسجيل خروج</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container main-content">
+            <!-- Overall Progress -->
+            <div class="card progress-card">
+                <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
                     <h2>التقدم الإجمالي</h2>
-                    <p class="last-update" id="lastUpdate">جاري التحميل...</p>
+                    <span class="status-badge" id="mainStatusBadge">جاري التحميل...</span>
                 </div>
-                <span class="status-badge" id="statusBadge">لم يبدأ</span>
+                <div class="progress-wrapper">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="overallProgressBar"></div>
+                    </div>
+                    <div class="progress-text" id="overallProgressText">0%</div>
+                </div>
             </div>
+
+            <!-- Updates Feed -->
+            <div class="card">
+                <h2>آخر التحديثات</h2>
+                <div id="updatesFeed" class="updates-container">
+                    <!-- Updates injected via JS -->
+                </div>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="categories-grid" id="publicCategoriesGrid">
+                <!-- Categories injected via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div id="loginView" class="hidden login-screen">
+        <div class="login-card">
+            <h2>تسجيل الدخول للمسؤولين</h2>
+            <input type="email" id="emailInput" placeholder="البريد الإلكتروني" class="input">
+            <input type="password" id="passwordInput" placeholder="كلمة المرور" class="input">
+            <button id="loginSubmitBtn" class="btn btn-primary" style="width:100%">تسجيل الدخول</button>
+            <button id="backToPublicBtn" class="btn btn-secondary" style="width:100%; margin-top:0.5rem">عودة</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD VIEW (Admin Only) -->
+    <div id="dashboardView" class="hidden">
+        <header class="header">
+            <div class="container header-content">
+                <h1>لوحة التحكم</h1>
+                <button id="viewSiteBtn" class="btn btn-secondary">عرض الموقع</button>
+            </div>
+        </header>
+
+        <main class="container main-content">
+            <!-- Manage Categories -->
+            <div class="card">
+                <h2>تحديث نسب الإنجاز</h2>
+                <div id="adminCategoriesList">
+                    <!-- Controls injected via JS -->
+                </div>
+            </div>
+
+            <!-- Add Update -->
+            <div class="card">
+                <h2>إضافة تحديث جديد</h2>
+                <input type="text" id="updateTitle" placeholder="عنوان التحديث" class="input">
+                
+                <div class="formatting-toolbar">
+                    <button id="fmtBold" class="format-btn"><b>B</b></button>
+                    <button id="fmtItalic" class="format-btn"><i>I</i></button>
+                    <button id="fmtList" class="format-btn">• قائمة</button>
+                </div>
+                
+                <div id="updateDescription" contenteditable="true" class="editor" data-placeholder="اكتب التفاصيل هنا..."></div>
+                
+                <div style="display:flex; gap:1rem;">
+                    <select id="updateType" class="select" style="margin-bottom:0">
+                        <option value="info">معلومة (أزرق)</option>
+                        <option value="success">نجاح (أخضر)</option>
+                        <option value="warning">تنبيه (أصفر)</option>
+                        <option value="error">مشكلة (أحمر)</option>
+                    </select>
+                    <button id="postUpdateBtn" class="btn btn-primary">نشر التحديث</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        // --- 1. MODULAR FIREBASE IMPORTS ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            query, 
+            orderBy, 
+            onSnapshot, 
+            addDoc, 
+            updateDoc, 
+            doc,
+            serverTimestamp,
+            limit
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged,
+            signInAnonymously,
+            signInWithCustomToken
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+
+
+        // --- 2. CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSWlerN4B4aPjHIP5amber29xT_0CyiPE",
+            authDomain: "nma-migration.firebaseapp.com",
+            projectId: "nma-migration",
+            storageBucket: "nma-migration.firebasestorage.app",
+            messagingSenderId: "575093887394",
+            appId: "1:575093887394:web:a84c9a3dfb50354650a2fb",
+            measurementId: "G-G72RH6BPLV"
+            };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = 'nma-migration';
+
+        // --- 3. STATE ---
+        let categories = [];
+        let currentUser = null;
+
+        // --- 4. INITIALIZATION FLOW ---
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth Error:", error);
+                document.getElementById('loadingOverlay').innerText = "خطأ في المصادقة: " + error.message;
+            }
+        };
+
+        // Start App
+        initAuth();
+
+        // Listen to Auth Changes
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                // If user is logged in (even anonymously), load data
+                subscribeToData();
+                
+                // Update UI based on whether it's an admin (email) or guest (anon)
+                // Note: In this simple app, we check isAnonymous to decide UI buttons
+                if (!user.isAnonymous) {
+                    document.getElementById('adminBtn').textContent = "لوحة التحكم";
+                    document.getElementById('logoutBtn').classList.remove('hidden');
+                } else {
+                    document.getElementById('adminBtn').textContent = "دخول المسؤول";
+                    document.getElementById('logoutBtn').classList.add('hidden');
+                }
+            }
+        });
+
+        // --- 5. DATA FETCHING ---
+        function subscribeToData() {
+            if (!currentUser) return;
+
+            const catsRef = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
+            const updatesRef = collection(db, 'artifacts', appId, 'public', 'data', 'updates');
+
+            // 1. Listen to Categories
+            const catQuery = query(catsRef, orderBy('order'));
+            onSnapshot(catQuery, (snapshot) => {
+                categories = [];
+                snapshot.forEach(d => {
+                    categories.push({ id: d.id, ...d.data() });
+                });
+                renderPublicCategories();
+                renderAdminCategories();
+                calculateOverallProgress();
+                document.getElementById('loadingOverlay').classList.add('hidden');
+                
+                // Auto-seed if empty
+                if (categories.length === 0) setupInitialData();
+            }, (error) => {
+                console.error("Error fetching categories:", error);
+                document.getElementById('loadingOverlay').innerText = "خطأ في تحميل البيانات. " + error.message;
+            });
+
+            // 2. Listen to Updates
+            const updatesQuery = query(updatesRef, orderBy('timestamp', 'desc'), limit(10));
+            onSnapshot(updatesQuery, (snapshot) => {
+                const updatesDiv = document.getElementById('updatesFeed');
+                if (snapshot.empty) {
+                    updatesDiv.innerHTML = '<p style="text-align:center; color:#888">لا توجد تحديثات بعد</p>';
+                    return;
+                }
+                
+                updatesDiv.innerHTML = '';
+                snapshot.forEach(d => {
+                    const data = d.data();
+                    const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-EG') : '';
+                    
+                    const html = `
+                        <div class="update-card update-${data.type}">
+                            <div class="update-header">
+                                <h3>${data.title}</h3>
+                                <span class="update-time">${date}</span>
+                            </div>
+                            <div style="margin-top:0.5rem; line-height:1.6">${data.description}</div>
+                        </div>
+                    `;
+                    updatesDiv.innerHTML += html;
+                });
+            }, (error) => {
+                console.error("Error fetching updates:", error);
+            });
+        }
+
+        // --- 6. RENDER HELPERS ---
+        function calculateOverallProgress() {
+            if (categories.length === 0) return;
+            const total = categories.reduce((sum, cat) => sum + (cat.progress || 0), 0);
+            const avg = Math.round(total / categories.length);
             
-            <div class="progress-wrapper">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="overallProgress"></div>
+            document.getElementById('overallProgressBar').style.width = avg + '%';
+            document.getElementById('overallProgressText').innerText = avg + '%';
+            
+            let statusText = "لم يبدأ";
+            let statusClass = "status-not-started";
+            
+            if (avg > 0 && avg < 100) { statusText = "جاري العمل"; statusClass = "status-in-progress"; }
+            else if (avg === 100) { statusText = "مكتمل"; statusClass = "status-complete"; }
+            
+            const badge = document.getElementById('mainStatusBadge');
+            badge.innerText = statusText;
+            badge.className = `status-badge ${statusClass}`;
+        }
+
+        function renderPublicCategories() {
+            const grid = document.getElementById('publicCategoriesGrid');
+            grid.innerHTML = categories.map(cat => `
+                <div class="category-card">
+                    <div class="category-header">
+                        <b>${cat.name}</b>
+                        <span class="status-badge status-${getStatusClass(cat.status)}">${cat.status}</span>
+                    </div>
+                    <div class="progress-bar" style="height:1rem">
+                        <div class="progress-fill" style="width:${cat.progress}%"></div>
+                    </div>
+                    <div style="text-align:left; margin-top:5px; font-size:0.8rem">${cat.progress}%</div>
                 </div>
-                <div class="progress-text" id="progressText">0%</div>
-            </div>
-        </div>
+            `).join('');
+        }
 
-        <!-- Updates Timeline -->
-        <div class="card">
-            <h2>آخر التحديثات</h2>
-            <div id="updatesContainer" class="updates-container">
-                <p class="empty-state">لا توجد تحديثات بعد</p>
-            </div>
-        </div>
+        function renderAdminCategories() {
+            const list = document.getElementById('adminCategoriesList');
+            // We use data-attributes to store IDs for event delegation
+            list.innerHTML = categories.map(cat => `
+                <div class="category-control">
+                    <div style="width:150px; font-weight:bold">${cat.name}</div>
+                    <input type="range" min="0" max="100" value="${cat.progress}" 
+                           data-id="${cat.id}" class="progress-slider" style="flex:1">
+                    <span style="width:50px; text-align:center">${cat.progress}%</span>
+                    <select data-id="${cat.id}" class="status-select select" style="width:120px; margin:0">
+                        <option value="لم يبدأ" ${cat.status === 'لم يبدأ' ? 'selected' : ''}>لم يبدأ</option>
+                        <option value="جاري العمل" ${cat.status === 'جاري العمل' ? 'selected' : ''}>جاري العمل</option>
+                        <option value="مكتمل" ${cat.status === 'مكتمل' ? 'selected' : ''}>مكتمل</option>
+                    </select>
+                </div>
+            `).join('');
 
-        <!-- Category Progress -->
-        <div class="categories-grid" id="categoriesGrid">
-            <!-- Categories will be loaded here -->
-        </div>
-    </main>
+            // Re-attach listeners because we used innerHTML
+            document.querySelectorAll('.progress-slider').forEach(input => {
+                input.addEventListener('change', (e) => updateCategory(e.target.dataset.id, 'progress', e.target.value));
+            });
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', (e) => updateCategory(e.target.dataset.id, 'status', e.target.value));
+            });
+        }
 
-    <footer class="footer">
-        <div class="container">
-            <p class="footer-title">NMA - نسيج الموضة الأنيقة</p>
-            <p class="footer-text">جاري الانتقال من منصة زد إلى شوبيفاي لتحسين تجربة التسوق</p>
-        </div>
-    </footer>
+        function getStatusClass(status) {
+            if (status === 'مكتمل') return 'complete';
+            if (status === 'جاري العمل') return 'in-progress';
+            return 'not-started';
+        }
 
-    <script src="./script.js"></script>
-    <script>
-        // Initialize status page
-        loadStatusPage();
+        // --- 7. EVENT HANDLERS ---
+        // We attach these to window or addEventListener because type="module" has its own scope
+        
+        // Navigation
+        document.getElementById('adminBtn').onclick = () => toggleView('login');
+        document.getElementById('logoutBtn').onclick = () => {
+             signOut(auth).then(() => {
+                 signInAnonymously(auth); // Go back to guest mode
+                 toggleView('public');
+             });
+        };
+        document.getElementById('loginSubmitBtn').onclick = handleLogin;
+        document.getElementById('backToPublicBtn').onclick = () => toggleView('public');
+        document.getElementById('viewSiteBtn').onclick = () => toggleView('public');
+        
+        // Post Update
+        document.getElementById('postUpdateBtn').onclick = postUpdate;
+
+        // Formatting
+        document.getElementById('fmtBold').onclick = () => document.execCommand('bold', false, null);
+        document.getElementById('fmtItalic').onclick = () => document.execCommand('italic', false, null);
+        document.getElementById('fmtList').onclick = () => document.execCommand('insertUnorderedList', false, null);
+
+        function handleLogin() {
+            const email = document.getElementById('emailInput').value;
+            const pass = document.getElementById('passwordInput').value;
+            
+            signInWithEmailAndPassword(auth, email, pass)
+                .then(() => toggleView('dashboard'))
+                .catch(e => alert("خطأ في تسجيل الدخول: " + e.message));
+        }
+
+        function updateCategory(id, field, value) {
+            if (field === 'progress') value = parseInt(value);
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'categories', id);
+            updateDoc(docRef, { [field]: value })
+                .catch(e => alert("Error updating: " + e.message));
+        }
+
+        function postUpdate() {
+            const title = document.getElementById('updateTitle').value;
+            const desc = document.getElementById('updateDescription').innerHTML;
+            const type = document.getElementById('updateType').value;
+
+            if (!title) return alert("الرجاء كتابة عنوان");
+
+            const updatesRef = collection(db, 'artifacts', appId, 'public', 'data', 'updates');
+            addDoc(updatesRef, {
+                title: title,
+                description: desc,
+                type: type,
+                timestamp: serverTimestamp()
+            }).then(() => {
+                alert("تم النشر بنجاح");
+                document.getElementById('updateTitle').value = '';
+                document.getElementById('updateDescription').innerHTML = '';
+            }).catch(e => alert("خطأ: " + e.message));
+        }
+
+        function toggleView(viewName) {
+            document.getElementById('publicView').classList.add('hidden');
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('dashboardView').classList.add('hidden');
+
+            if (viewName === 'public') document.getElementById('publicView').classList.remove('hidden');
+            if (viewName === 'login') {
+                if(currentUser && !currentUser.isAnonymous) toggleView('dashboard');
+                else document.getElementById('loginView').classList.remove('hidden');
+            }
+            if (viewName === 'dashboard') document.getElementById('dashboardView').classList.remove('hidden');
+        }
+
+        // --- 8. SEED DATA ---
+        async function setupInitialData() {
+            const initialCats = [
+                { name: "نقل العملاء", progress: 0, status: "لم يبدأ", order: 1 },
+                { name: "ربط أودو", progress: 0, status: "لم يبدأ", order: 2 },
+                { name: "ربط بوابات الدفع", progress: 0, status: "لم يبدأ", order: 3 },
+                { name: "إعداد المواقع الجغرافية", progress: 0, status: "لم يبدأ", order: 4 },
+                { name: "تطوير القالب", progress: 0, status: "لم يبدأ", order: 5 },
+                { name: "الاختبارات", progress: 0, status: "لم يبدأ", order: 6 }
+            ];
+            
+            const catsRef = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
+            for (const cat of initialCats) {
+                await addDoc(catsRef, cat);
+            }
+            console.log("Categories seeded!");
+        }
     </script>
 </body>
 </html>
