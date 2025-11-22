@@ -32,6 +32,8 @@
             .comment-form-row { flex-direction: column; }
             .btn { width: 100%; justify-content: center; display: flex; }
             .header-actions { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; }
+            .category-control { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+            .control-row { flex-direction: column; }
         }
 
         /* Buttons */
@@ -44,6 +46,8 @@
         .btn-danger:hover { background: #fecaca; }
         .btn-text { background: none; color: #6b7280; padding: 0; text-decoration: underline; font-size: 0.8rem; }
         .btn-ghost { background: transparent; color: #4b5563; border: 1px solid #d1d5db; }
+        .btn-icon { padding: 0.5rem; border-radius: 0.25rem; cursor: pointer; border: 1px solid #e2e8f0; background: white; color: #ef4444; }
+        .btn-icon:hover { background: #fee2e2; }
         
         /* Layout & Cards */
         .main-content { padding: 0; }
@@ -101,7 +105,8 @@
         .status-in-progress { background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
         .status-complete { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
         
-        .category-control { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #eee; }
+        .category-control { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem 0; border-bottom: 1px solid #eee; }
+        .control-row { display: flex; align-items: center; gap: 1rem; width: 100%; }
         
         /* Loading Overlay */
         #loadingOverlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 50; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #3b82f6; gap: 1rem; }
@@ -185,6 +190,25 @@
         </header>
 
         <main class="container main-content">
+            
+            <!-- Manage Categories -->
+            <div class="card">
+                <h2 style="margin-bottom:1rem">إدارة المهام</h2>
+                
+                <!-- Add New Category -->
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px dashed #cbd5e1;">
+                    <h3 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: #475569;">إضافة مهمة جديدة</h3>
+                    <div class="comment-form-row">
+                        <input type="text" id="newCatName" placeholder="اسم المهمة الجديدة" class="input" style="margin-bottom:0; flex:2">
+                        <button id="addCatBtn" class="btn btn-primary" style="flex:1">➕ إضافة</button>
+                    </div>
+                </div>
+
+                <div id="adminCategoriesList">
+                    <!-- Controls injected via JS -->
+                </div>
+            </div>
+
             <!-- Add Update -->
             <div class="card">
                 <h2 style="margin-bottom:1rem">إضافة تحديث جديد</h2>
@@ -208,14 +232,6 @@
                     <button id="postUpdateBtn" class="btn btn-primary" style="flex:1">نشر التحديث</button>
                 </div>
             </div>
-
-            <!-- Manage Categories -->
-            <div class="card">
-                <h2 style="margin-bottom:1rem">تحديث نسب الإنجاز</h2>
-                <div id="adminCategoriesList">
-                    <!-- Controls injected via JS -->
-                </div>
-            </div>
         </main>
     </div>
 
@@ -230,6 +246,7 @@
             onSnapshot, 
             addDoc, 
             updateDoc, 
+            deleteDoc,
             doc,
             serverTimestamp,
             arrayUnion,
@@ -308,7 +325,7 @@
                 renderAdminCategories();
                 calculateOverallProgress();
                 document.getElementById('loadingOverlay').classList.add('hidden');
-                if (categories.length === 0) setupInitialData();
+                // I disabled auto-seeding to prevent duplicates. You can now add tasks manually.
             });
 
             // Updates
@@ -436,24 +453,42 @@
             const list = document.getElementById('adminCategoriesList');
             list.innerHTML = categories.map(cat => `
                 <div class="category-control">
-                    <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:0.5rem">
+                    <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:0.25rem">
                         <strong>${cat.name}</strong>
-                        <span>${cat.progress}%</span>
                     </div>
-                    <input type="range" min="0" max="100" value="${cat.progress}" 
-                           data-id="${cat.id}" class="progress-slider" style="width:100%; margin-bottom:0.5rem">
-                    <select data-id="${cat.id}" class="status-select select" style="width:100%; margin:0">
-                        <option ${cat.status === 'لم يبدأ' ? 'selected' : ''}>لم يبدأ</option>
-                        <option ${cat.status === 'جاري العمل' ? 'selected' : ''}>جاري العمل</option>
-                        <option ${cat.status === 'مكتمل' ? 'selected' : ''}>مكتمل</option>
-                    </select>
+                    
+                    <div class="control-row">
+                        <input type="range" min="0" max="100" value="${cat.progress}" 
+                            data-id="${cat.id}" class="progress-slider" style="flex:1">
+                        <span style="font-size:0.9rem; width:40px">${cat.progress}%</span>
+                    </div>
+
+                    <div class="control-row">
+                        <select data-id="${cat.id}" class="status-select select" style="margin:0; flex:1">
+                            <option ${cat.status === 'لم يبدأ' ? 'selected' : ''}>لم يبدأ</option>
+                            <option ${cat.status === 'جاري العمل' ? 'selected' : ''}>جاري العمل</option>
+                            <option ${cat.status === 'مكتمل' ? 'selected' : ''}>مكتمل</option>
+                        </select>
+                        <button class="btn-icon delete-cat-btn" data-id="${cat.id}" title="حذف المهمة">
+                            🗑️
+                        </button>
+                    </div>
                 </div>
             `).join('');
 
+            // Attach listeners
             document.querySelectorAll('.progress-slider').forEach(i => 
                 i.addEventListener('change', (e) => updateCat(e.target.dataset.id, 'progress', e.target.value)));
+            
             document.querySelectorAll('.status-select').forEach(s => 
                 s.addEventListener('change', (e) => updateCat(e.target.dataset.id, 'status', e.target.value)));
+
+            // Add delete listeners
+            document.querySelectorAll('.delete-cat-btn').forEach(b => 
+                b.addEventListener('click', (e) => {
+                    const id = e.target.closest('button').dataset.id; // ensure we get ID even if icon clicked
+                    deleteCategory(id);
+                }));
         }
 
         function getStatusClass(s) {
@@ -509,6 +544,21 @@
         document.getElementById('backToPublicBtn').onclick = () => toggleView('public');
         document.getElementById('viewSiteBtn').onclick = () => toggleView('public');
         document.getElementById('postUpdateBtn').onclick = postUpdate;
+        
+        // Add Category
+        document.getElementById('addCatBtn').onclick = () => {
+            const name = document.getElementById('newCatName').value.trim();
+            if(!name) return alert('الرجاء كتابة اسم المهمة');
+            
+            addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'categories'), {
+                name: name,
+                progress: 0,
+                status: 'لم يبدأ',
+                order: categories.length + 1 // Add to end
+            }).then(() => {
+                document.getElementById('newCatName').value = '';
+            }).catch(e => alert(e.message));
+        };
 
         // Formatting
         document.getElementById('fmtBold').onclick = () => document.execCommand('bold', false, null);
@@ -527,6 +577,13 @@
             if (field === 'progress') value = parseInt(value);
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'categories', id);
             updateDoc(docRef, { [field]: value });
+        }
+
+        function deleteCategory(id) {
+            if(confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
+                deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', id))
+                    .catch(e => alert(e.message));
+            }
         }
 
         function postUpdate() {
@@ -556,19 +613,6 @@
                 if (currentUser && !currentUser.isAnonymous) toggleView('dashboard');
                 else document.getElementById('loginView').classList.remove('hidden');
             }
-        }
-
-        async function setupInitialData() {
-            const cats = [
-                { name: "نقل العملاء", progress: 0, status: "لم يبدأ", order: 1 },
-                { name: "ربط أودو", progress: 0, status: "لم يبدأ", order: 2 },
-                { name: "ربط بوابات الدفع", progress: 0, status: "لم يبدأ", order: 3 },
-                { name: "إعداد المواقع الجغرافية", progress: 0, status: "لم يبدأ", order: 4 },
-                { name: "تطوير القالب", progress: 0, status: "لم يبدأ", order: 5 },
-                { name: "الاختبارات", progress: 0, status: "لم يبدأ", order: 6 }
-            ];
-            const ref = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
-            for (const c of cats) await addDoc(ref, c);
         }
     </script>
 </body>
