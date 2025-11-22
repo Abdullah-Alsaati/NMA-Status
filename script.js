@@ -79,6 +79,7 @@ function loadStatusPage() {
   statusBadge.className = 'status-badge ' + getStatusClass(data.currentStatus);
   
   // Load updates
+// Load updates
   const updatesContainer = document.getElementById('updatesContainer');
   if (data.updates.length === 0) {
     updatesContainer.innerHTML = '<p class="empty-state">لا توجد تحديثات بعد</p>';
@@ -94,16 +95,21 @@ function loadStatusPage() {
               <h3 class="update-title">${update.title}</h3>
               <span class="update-time">${formatDate(update.timestamp)}</span>
             </div>
-            ${update.description ? `<p class="update-description">${update.description}</p>` : ''}
+            ${update.description ? `<div class="update-description">${update.description}</div>` : ''}
             
-            <div class="comments-divider"></div>
-            <div class="comments-section">
-              <div class="comments-header">
+            <!-- Comments Toggle -->
+            <div class="comments-actions">
+              <button onclick="toggleComments(${update.id})" class="btn-text">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                 </svg>
-                <span>التعليقات (${update.comments?.length || 0})</span>
-              </div>
+                عرض التعليقات (${update.comments?.length || 0})
+              </button>
+            </div>
+            
+            <!-- Comments Section (Hidden by default) -->
+            <div id="comments_${update.id}" class="comments-section hidden">
+              <div class="comments-divider"></div>
               
               ${update.comments && update.comments.length > 0 ? `
                 <div class="comments-list">
@@ -117,19 +123,27 @@ function loadStatusPage() {
                     </div>
                   `).join('')}
                 </div>
-              ` : ''}
+              ` : '<p class="empty-comments">لا توجد تعليقات بعد</p>'}
               
-              <div class="comment-form">
-                <input type="text" placeholder="اسمك (اختياري)" class="input" id="commenterName_${update.id}">
-                <div style="display: flex; gap: 0.5rem;">
-                  <input type="text" placeholder="أضف تعليقاً..." class="input" id="commentText_${update.id}" style="flex: 1; margin-bottom: 0;">
-                  <button onclick="addComment(${update.id})" class="btn btn-primary">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
-                  </button>
+              <!-- Add Comment Form (Hidden by default) -->
+              <div id="commentForm_${update.id}" class="comment-form-wrapper hidden">
+                <div class="comment-form">
+                  <input type="text" placeholder="اسمك (اختياري)" class="input" id="commenterName_${update.id}">
+                  <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" placeholder="أضف تعليقاً..." class="input" id="commentText_${update.id}" style="flex: 1; margin-bottom: 0;">
+                    <button onclick="addComment(${update.id})" class="btn btn-primary">
+                      إرسال
+                    </button>
+                  </div>
                 </div>
               </div>
+              
+              <button onclick="toggleCommentForm(${update.id})" class="btn-add-comment">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                إضافة تعليق
+              </button>
             </div>
           </div>
         </div>
@@ -329,4 +343,16 @@ function deleteUpdate(id) {
   data.updates = data.updates.filter(u => u.id !== id);
   saveData(data);
   loadDashboard();
+}
+
+// Toggle comments visibility
+function toggleComments(updateId) {
+  const commentsSection = document.getElementById('comments_' + updateId);
+  commentsSection.classList.toggle('hidden');
+}
+
+// Toggle comment form visibility
+function toggleCommentForm(updateId) {
+  const commentForm = document.getElementById('commentForm_' + updateId);
+  commentForm.classList.toggle('hidden');
 }
