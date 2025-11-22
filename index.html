@@ -522,6 +522,7 @@
                         <select data-id="${cat.id}" class="status-select select" style="margin:0; flex:1">
                             <option ${cat.status === 'لم يبدأ' ? 'selected' : ''}>لم يبدأ</option>
                             <option ${cat.status === 'جاري العمل' ? 'selected' : ''}>جاري العمل</option>
+                            <option ${cat.status === 'متوقف مؤقتاً' ? 'selected' : ''}>متوقف مؤقتاً</option>
                             <option ${cat.status === 'مكتمل' ? 'selected' : ''}>مكتمل</option>
                         </select>
                         <button class="btn-icon delete-cat-btn" data-id="${cat.id}" title="حذف المهمة">
