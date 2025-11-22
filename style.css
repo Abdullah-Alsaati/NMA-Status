@@ -99,7 +99,7 @@ body {
 
 @media (max-width: 400px) {
     .card {
-        width: 95%;
+        width: 90%;
         justify-self: center;
     }
 }
