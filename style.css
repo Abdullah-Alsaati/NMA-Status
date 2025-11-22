@@ -97,6 +97,13 @@ body {
     margin-bottom: 2rem;
 }
 
+@media (max-width: 400px) {
+    .card {
+        width: 95%;
+        justify-content: center;
+    }
+}
+
 .card h2 {
     font-size: 1.5rem;
     font-weight: bold;
