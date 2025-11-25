@@ -161,7 +161,7 @@
                 </div>
             </div>
 
-            <!-- Updates Feed (MOVED HERE) -->
+            <!-- Updates Feed -->
             <div class="card">
                 <h2 style="font-size:1.25rem; font-weight:bold; margin-bottom:1.5rem">آخر التحديثات</h2>
                 <div id="updatesFeed" class="updates-container">
@@ -169,7 +169,7 @@
                 </div>
             </div>
 
-            <!-- Categories Grid (MOVED HERE) -->
+            <!-- Categories Grid -->
             <div class="categories-grid" id="publicCategoriesGrid" style="margin-bottom: 2rem;">
                 <!-- Categories injected via JS -->
             </div>
@@ -281,20 +281,21 @@
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         // --- 2. CONFIGURATION ---
-        // Import the functions you need from the SDKs you need
+        // Your existing configuration is preserved here:
         const firebaseConfig = {
-        apiKey: "AIzaSyBSWlerN4B4aPjHIP5amber29xT_0CyiPE",
-        authDomain: "nma-migration.firebaseapp.com",
-        projectId: "nma-migration",
-        storageBucket: "nma-migration.firebasestorage.app",
-        messagingSenderId: "575093887394",
-        appId: "1:575093887394:web:a84c9a3dfb50354650a2fb",
-        measurementId: "G-G72RH6BPLV"
+            apiKey: "AIzaSyBSWlerN4B4aPjHIP5amber29xT_0CyiPE",
+            authDomain: "nma-migration.firebaseapp.com",
+            projectId: "nma-migration",
+            storageBucket: "nma-migration.firebasestorage.app",
+            messagingSenderId: "575093887394",
+            appId: "1:575093887394:web:a84c9a3dfb50354650a2fb",
+            measurementId: "G-G72RH6BPLV"
         };
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        // Using your specific appId
         const appId = 'nma-tracker';
 
         // --- 3. STATE ---
@@ -302,6 +303,7 @@
         let updatesList = [];
         let currentUser = null;
         let editingUpdateId = null;
+        let showAllUpdates = false; // New state for toggling updates
 
         // --- 4. INITIALIZATION ---
         const initAuth = async () => {
@@ -348,8 +350,8 @@
                 document.getElementById('loadingOverlay').classList.add('hidden');
             });
 
-            // Updates
-            onSnapshot(query(updatesRef, orderBy('timestamp', 'desc'), limit(20)), (snapshot) => {
+            // Updates - fetching up to 50 to support "Show All"
+            onSnapshot(query(updatesRef, orderBy('timestamp', 'desc'), limit(50)), (snapshot) => {
                 updatesList = [];
                 snapshot.forEach(d => updatesList.push({ id: d.id, ...d.data() }));
                 
@@ -368,9 +370,30 @@
             }
             
             updatesDiv.innerHTML = '';
-            updatesList.forEach(data => {
+            
+            // Determine visible updates (NEW FEATURE LOGIC)
+            const visibleUpdates = showAllUpdates ? updatesList : updatesList.slice(0, 2);
+            
+            visibleUpdates.forEach(data => {
                 renderSingleUpdate(data.id, data, updatesDiv);
             });
+            
+            // Show/Hide Button (NEW FEATURE LOGIC)
+            if (updatesList.length > 2) {
+                const btnText = showAllUpdates ? "إخفاء التحديثات القديمة" : "عرض كل التحديثات";
+                const btnHtml = `
+                    <div style="text-align:center; margin-top:1rem">
+                        <button id="toggleUpdatesBtn" class="btn btn-secondary" style="min-width:200px">
+                            ${btnText}
+                        </button>
+                    </div>
+                `;
+                updatesDiv.insertAdjacentHTML('beforeend', btnHtml);
+                document.getElementById('toggleUpdatesBtn').onclick = () => {
+                    showAllUpdates = !showAllUpdates;
+                    renderUpdatesFeed();
+                };
+            }
         }
 
         function renderAdminUpdates() {
@@ -522,7 +545,6 @@
                         <select data-id="${cat.id}" class="status-select select" style="margin:0; flex:1">
                             <option ${cat.status === 'لم يبدأ' ? 'selected' : ''}>لم يبدأ</option>
                             <option ${cat.status === 'جاري العمل' ? 'selected' : ''}>جاري العمل</option>
-                            <option ${cat.status === 'متوقف مؤقتاً' ? 'selected' : ''}>متوقف مؤقتاً</option>
                             <option ${cat.status === 'مكتمل' ? 'selected' : ''}>مكتمل</option>
                         </select>
                         <button class="btn-icon delete-cat-btn" data-id="${cat.id}" title="حذف المهمة">
